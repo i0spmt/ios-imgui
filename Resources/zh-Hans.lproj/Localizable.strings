@@ -1,0 +1,8 @@
+/* Launcher button, overlay not running */
+"Start imgui" = "Start imgui";
+
+/* Launcher button, overlay running */
+"Kill imgui" = "Kill imgui";
+
+/* Home screen quick action */
+"Toggle HUD" = "打开/关闭悬浮窗";
