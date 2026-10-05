@@ -58,14 +58,23 @@
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 {
-    // Ask the content directly rather than going through super, which would
-    // also offer the window itself as a candidate.
-    UIView *hitView = [self.rootViewController.view hitTest:point withEvent:event];
+    UIView *rootView = self.rootViewController.view;
+    if (!rootView) {
+        return nil;
+    }
+
+    // Convert into the root view's own space before asking it. The window is
+    // never rotated, but the root view is — it carries a rotation transform and
+    // swapped bounds — so in landscape the two coordinate spaces no longer
+    // line up. They match exactly in portrait, which is why passing the point
+    // through unconverted appeared to work.
+    CGPoint localPoint = [rootView convertPoint:point fromView:self];
+    UIView *hitView = [rootView hitTest:localPoint withEvent:event];
 
     // Nothing interactive claimed the point — the root view itself is just a
     // transparent full-screen container. Returning nil lets the touch reach
     // whatever is behind the HUD instead of being swallowed by it.
-    if (!hitView || hitView == self.rootViewController.view) {
+    if (!hitView || hitView == rootView) {
         return nil;
     }
     return hitView;
